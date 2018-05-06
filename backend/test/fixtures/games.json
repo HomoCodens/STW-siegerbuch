@@ -1,0 +1,38 @@
+[
+  {
+    "game_id": 1,
+    "game_name": "Agricola",
+    "bgg_id": 31260,
+    "thumbnail_url": "https://cf.geekdo-images.com/micro/img/Snnyt1cOfe1N0_KKyMBHSpd6Xms=/fit-in/64x64/pic259085.jpg"
+  },
+  {
+    "game_id": 2,
+    "game_name": "Bohnanza",
+    "bgg_id": 11,
+    "thumbnail_url": "https://cf.geekdo-images.com/micro/img/dp2WPKMWrHEtNAcCG9D77Phmr6I=/fit-in/64x64/pic69366.jpg"
+  },
+  {
+    "game_id": 3,
+    "game_name": "Die Legenden von Andor",
+    "bgg_id": 127398,
+    "thumbnail_url": "https://cf.geekdo-images.com/micro/img/zLmyJd1BOfKaSnVKun5jygFQ1J0=/fit-in/64x64/pic2606106.jpg"
+  },
+  {
+    "game_id": 4,
+    "game_name": "Freitag",
+    "bgg_id": 43570,
+    "thumbnail_url": "https://cf.geekdo-images.com/micro/img/XdhpMegqh38KCGAbfSaDkzT9yCU=/fit-in/64x64/pic1513328.jpg"
+  },
+  {
+    "game_id": 5,
+    "game_name": "Descent 2e",
+    "bgg_id": 104162,
+    "thumbnail_url": "https://cf.geekdo-images.com/itemrep/img/DBYvbOdPB-xKGMhualCczcUSvWI=/fit-in/246x300/pic1180640.jpg"
+  },
+  {
+    "game_id": 6,
+    "game_name": "Targi",
+    "bgg_id": 118048,
+    "thumbnail_url": "https://cf.geekdo-images.com/micro/img/IzeJIGzzO2oHLkH0cBX9XjwhQMo=/fit-in/64x64/pic3958793.jpg"
+  }
+]
