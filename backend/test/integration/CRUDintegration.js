@@ -36,7 +36,9 @@ describe('CRUD integration tests', function() {
   });
 
   after(() => {
-    testCRUD.end();
+    testCRUD.dropTables([testTable]).then(() => {
+      testCRUD.end();
+    });
   });
 
   it('create', function() {
