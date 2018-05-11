@@ -31,8 +31,9 @@ describe('CRUD integration tests', function() {
   })
 
   beforeEach(() => {
-    testCRUD.dropTables([testTable]);
-    return testCRUD.loadFixtures(testFixture);
+    return testCRUD.dropTables([testTable]).then(() => {
+      return testCRUD.loadFixtures(testFixture);
+    });
   });
 
   after(() => {
