@@ -77,6 +77,12 @@ class CRUD {
     });
   }
 
+  // TODO: Expand conditions to allow for some SQL-like syntax w/ more than just = AND = AND =
+  // e.g.
+  // {
+  //    column1: and(smallerThan(10), greaterThan(0))
+  //    column2: or(equals('root'), matches('admin.*'))
+  // }
   chainConditions(condObj) {
     return {
       toSqlString: () => {
