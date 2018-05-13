@@ -51,6 +51,12 @@ router.router.get('/test', (req, res) => {
   res.send('Results');
 });
 
+router.router.get('/allthegames', (req, res) => {
+  router.read().then((records) => {
+    res.json(records);
+  });
+});
+
 describe('/games routes', function() {
   var app;
   var request;
@@ -266,6 +272,14 @@ describe('/games routes', function() {
     .then((response) => {
       response.statusCode.should.equal(200);
       response.text.should.equal('Results');
-    })
+    });
+  });
+
+  it('is expandable with CRUDHandler methods', function() {
+    request.get('/games/allthegames')
+    .then((response) => {
+      response.statusCode.should.equal(200);
+      response.body.should.eql(games);
+    });
   });
 });

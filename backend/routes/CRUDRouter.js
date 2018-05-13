@@ -11,6 +11,10 @@ class CRUDRouter {
     this.extractLegalFields = this.extractLegalFields.bind(this);
     this.bindRoutes = this.bindRoutes.bind(this);
     this.createRouter = this.createRouter.bind(this);
+    this.create = this.create.bind(this);
+    this.read = this.read.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
 
     this.router = this.createRouter();
   }
@@ -51,7 +55,7 @@ class CRUDRouter {
     router.route('/')
     // Read all
     .get((req, res) => {
-      this.CRUDHandler.read(this.table).then((records) => {
+      this.read().then((records) => {
         res.json(records);
       });
     })
@@ -60,7 +64,7 @@ class CRUDRouter {
       if(!req.body || Object.keys(req.body).length === 0) {
         res.sendStatus(400)
       } else {
-        this.CRUDHandler.create(this.table, req.body)
+        this.create(req.body)
         .then((created) => {
           res.status(201)
           .append('Location', '/' + this.table + '/' + created.insertId)
@@ -79,7 +83,7 @@ class CRUDRouter {
     router.route('/:id(\\d+)')
     // Get specific
     .get((req, res) => {
-      this.CRUDHandler.read(this.table, {[this.idColumn]: req.params.id})
+      this.read({[this.idColumn]: req.params.id})
       .then((record) => {
         if(record.length === 0) {
           res.sendStatus(404);
@@ -93,7 +97,7 @@ class CRUDRouter {
       if(!req.body || Object.keys(req.body).length === 0) {
         res.sendStatus(400);
       } else {
-        this.CRUDHandler.update(this.table, {[this.idColumn]: req.params.id}, req.body)
+        this.update({[this.idColumn]: req.params.id}, req.body)
         .then((updated) => {
           if(updated.changedRows === 0) {
             res.sendStatus(404);
@@ -105,7 +109,7 @@ class CRUDRouter {
     })
     // Delete specific
     .delete((req, res) => {
-      this.CRUDHandler.delete(this.table, {[this.idColumn]: req.params.id})
+      this.delete({[this.idColumn]: req.params.id})
       .then(() => {
         res.sendStatus(204);
       });
@@ -123,6 +127,23 @@ class CRUDRouter {
     });
 
     return router;
+  }
+
+  // helpers for easier expansion w/ methods using CRUDHandler
+  create(data) {
+    return this.CRUDHandler.create(this.table, data);
+  }
+
+  read(conditions) {
+    return this.CRUDHandler.read(this.table, conditions);
+  }
+
+  update(conditions, data) {
+    return this.CRUDHandler.update(this.table, conditions, data);
+  }
+
+  delete(conditions) {
+    return this.CRUDHandler.delete(this.table, conditions);
   }
 }
 
