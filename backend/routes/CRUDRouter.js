@@ -10,11 +10,12 @@ class CRUDRouter {
 
     this.extractLegalFields = this.extractLegalFields.bind(this);
     this.bindRoutes = this.bindRoutes.bind(this);
-    this.appendCRUDRoutes = this.appendCRUDRoutes.bind(this);
+    this.createRouter = this.createRouter.bind(this);
     this.create = this.create.bind(this);
     this.read = this.read.bind(this);
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
+    this.query = this.query.bind(this);
 
     this.router = express.Router();
   }
@@ -142,6 +143,10 @@ class CRUDRouter {
 
   delete(conditions) {
     return this.CRUDHandler.delete(this.table, conditions);
+  }
+
+  query(query, parameters) {
+    return this.CRUDHandler.query(query, parameters);
   }
 }
 

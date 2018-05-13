@@ -17,6 +17,7 @@ class CRUD {
     this.read = this.read.bind(this);
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
+    this.query = this.query.bind(this);
   }
 
   getConnection() {
@@ -74,6 +75,12 @@ class CRUD {
   delete(table, conditions) {
     return Promise.using(this.getConnection(), (conn) => {
       return conn.query('DELETE FROM ?? WHERE ?', [table, this.chainConditions(conditions)]);
+    });
+  }
+
+  query(query, parameters) {
+    return Promise.using(this.getConnection(), (conn) => {
+      return conn.query(query, parameters);
     });
   }
 
