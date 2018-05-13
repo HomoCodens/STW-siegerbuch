@@ -57,7 +57,7 @@ router.router.get('/allthegames', (req, res) => {
   });
 });
 
-describe('/games routes', function() {
+describe('CRUDRoutes', function() {
   var app;
   var request;
 
@@ -79,7 +79,7 @@ describe('/games routes', function() {
   /****************************************
   * CREATE tests
   ****************************************/
-  it('POST /games', function() {
+  it('POST /resource', function() {
     request.post('/games')
     .send(games[0])
     .then((response) => {
@@ -95,7 +95,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('POST duplicate /games', function() {
+  it('POST duplicate /resource', function() {
     request.post('/games')
     .send(games[1])
     .then((response) => {
@@ -110,7 +110,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('POST empty /games', function() {
+  it('POST empty /resource', function() {
     request.post('/games')
     .then((response) => {
       response.statusCode.should.equal(400);
@@ -126,7 +126,7 @@ describe('/games routes', function() {
   /****************************************
   * READ tests
   ****************************************/
-  it('GET /games', function() {
+  it('GET /resource', function() {
     request.get('/games')
     .then((response) => {
       response.statusCode.should.equal(200);
@@ -138,7 +138,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('GET /games/existing', function() {
+  it('GET /resource/existing', function() {
     request.get('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(200);
@@ -150,7 +150,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('GET /games/nonexisting', function() {
+  it('GET /resource/nonexisting', function() {
     request.get('/games/' + nonExistingId)
     .then((response) => {
       response.statusCode.should.equal(404);
@@ -162,7 +162,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('GET /games/NaN', function() {
+  it('GET /resource/NaN', function() {
     request.get('/games/baNaNas')
     .then((response) => {
       response.statusCode.should.equal(404);
@@ -176,7 +176,7 @@ describe('/games routes', function() {
   /****************************************
   * UPDATE tests
   ****************************************/
-  it('PATCH /games/existing', function() {
+  it('PATCH /resource/existing', function() {
     request.patch('/games/' + existingId)
     .send(games[0])
     .then((response) => {
@@ -189,7 +189,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('PATCH /games/nonexisting', function() {
+  it('PATCH /resource/nonexisting', function() {
     request.patch('/games/' + nonExistingId)
     .send(games[0])
     .then((response) => {
@@ -202,7 +202,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('PATCH empty /games', function() {
+  it('PATCH empty /resource', function() {
     request.patch('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(400);
@@ -216,7 +216,7 @@ describe('/games routes', function() {
   /****************************************
   * DELETE tests
   ****************************************/
-  it('DELETE /games/existing', function() {
+  it('DELETE /resource/existing', function() {
     request.delete('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(204);
@@ -228,7 +228,7 @@ describe('/games routes', function() {
     });
   });
 
-  it('DELETE /games/nonexisting', function() {
+  it('DELETE /resource/nonexisting', function() {
     request.delete('/games/' + nonExistingId)
     .then((response) => {
       response.statusCode.should.equal(204);
