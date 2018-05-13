@@ -1,6 +1,5 @@
 require('../setup/testSetup');
 
-const proxyquire = require('proxyquire').noCallThru();
 const supertest = require('supertest');
 const sinon = require('sinon');
 const express = require('express');
@@ -14,7 +13,7 @@ const games = require('../fixtures/games.json').map((o) => {
   }
 });
 
-var crud = require('../../db/CRUDHandler');
+const CRUDRouter = require('../../routes/CRUDRouter');
 
 const existingId = 1;
 const nonExistingId = 2;
@@ -46,8 +45,10 @@ var fakeCRUD = {
   delete: fakeDelete
 };
 
-var router = proxyquire('../../routes/games', {
-  '../db/CRUDHandler': fakeCRUD
+const router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
+
+router.router.get('/test', (req, res) => {
+  res.send('Results');
 });
 
 describe('/games routes', function() {
@@ -58,7 +59,8 @@ describe('/games routes', function() {
     app = express();
 
     app.use(bodyParser.json());
-    router(app);
+
+    router.bindRoutes(app);
 
     request = supertest(app);
 
@@ -68,20 +70,16 @@ describe('/games routes', function() {
     fakeCRUD.delete.resetHistory();
   });
 
-  after(() => {
-    crud.end();
-  });
-
   /****************************************
   * CREATE tests
   ****************************************/
   it('POST /games', function() {
-    return request.post('/games')
+    request.post('/games')
     .send(games[0])
     .then((response) => {
       response.statusCode.should.equal(201);
 
-      response.body.should.eql({game_id: newId});
+      response.body.should.eql({id: newId});
 
       response.headers.should.have.property('location');
       response.headers.location.should.equal('/games/' + newId);
@@ -92,7 +90,7 @@ describe('/games routes', function() {
   });
 
   it('POST duplicate /games', function() {
-    return request.post('/games')
+    request.post('/games')
     .send(games[1])
     .then((response) => {
       response.statusCode.should.equal(409);
@@ -107,7 +105,7 @@ describe('/games routes', function() {
   });
 
   it('POST empty /games', function() {
-    return request.post('/games')
+    request.post('/games')
     .then((response) => {
       response.statusCode.should.equal(400);
 
@@ -123,7 +121,7 @@ describe('/games routes', function() {
   * READ tests
   ****************************************/
   it('GET /games', function() {
-    return request.get('/games')
+    request.get('/games')
     .then((response) => {
       response.statusCode.should.equal(200);
 
@@ -135,7 +133,7 @@ describe('/games routes', function() {
   });
 
   it('GET /games/existing', function() {
-    return request.get('/games/' + existingId)
+    request.get('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(200);
 
@@ -147,7 +145,7 @@ describe('/games routes', function() {
   });
 
   it('GET /games/nonexisting', function() {
-    return request.get('/games/' + nonExistingId)
+    request.get('/games/' + nonExistingId)
     .then((response) => {
       response.statusCode.should.equal(404);
 
@@ -159,7 +157,7 @@ describe('/games routes', function() {
   });
 
   it('GET /games/NaN', function() {
-    return request.get('/games/baNaNas')
+    request.get('/games/baNaNas')
     .then((response) => {
       response.statusCode.should.equal(404);
 
@@ -173,7 +171,7 @@ describe('/games routes', function() {
   * UPDATE tests
   ****************************************/
   it('PATCH /games/existing', function() {
-    return request.patch('/games/' + existingId)
+    request.patch('/games/' + existingId)
     .send(games[0])
     .then((response) => {
       response.statusCode.should.equal(204);
@@ -186,7 +184,7 @@ describe('/games routes', function() {
   });
 
   it('PATCH /games/nonexisting', function() {
-    return request.patch('/games/' + nonExistingId)
+    request.patch('/games/' + nonExistingId)
     .send(games[0])
     .then((response) => {
       response.statusCode.should.equal(404);
@@ -199,7 +197,7 @@ describe('/games routes', function() {
   });
 
   it('PATCH empty /games', function() {
-    return request.patch('/games/' + existingId)
+    request.patch('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(400);
 
@@ -213,7 +211,7 @@ describe('/games routes', function() {
   * DELETE tests
   ****************************************/
   it('DELETE /games/existing', function() {
-    return request.delete('/games/' + existingId)
+    request.delete('/games/' + existingId)
     .then((response) => {
       response.statusCode.should.equal(204);
 
@@ -225,7 +223,7 @@ describe('/games routes', function() {
   });
 
   it('DELETE /games/nonexisting', function() {
-    return request.delete('/games/' + nonExistingId)
+    request.delete('/games/' + nonExistingId)
     .then((response) => {
       response.statusCode.should.equal(204);
 
@@ -240,7 +238,7 @@ describe('/games routes', function() {
   * misc tests
   ****************************************/
   it('error middleware', function() {
-    return request.get('/games/' + evilId)
+    request.get('/games/' + evilId)
     .then((response) => {
       response.statusCode.should.equal(500);
 
@@ -254,12 +252,20 @@ describe('/games routes', function() {
     var data = games[0];
     data.illegalField = 'Evil stuff & hackling';
 
-    return request.post('/games')
+    request.post('/games')
     .send(data)
     .then((response) => {
-      response.body.should.have.property('game_id').that.is.a('number');
+      response.body.should.have.property('id').that.is.a('number');
 
       fakeCRUD.create.calledWith('games', sinon.match((x) => !x.illegalField)).should.be.true;
     });
+  });
+
+  it('is expandable', function() {
+    request.get('/games/test')
+    .then((response) => {
+      response.statusCode.should.equal(200);
+      response.text.should.equal('Results');
+    })
   });
 });
