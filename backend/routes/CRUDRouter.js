@@ -10,13 +10,13 @@ class CRUDRouter {
 
     this.extractLegalFields = this.extractLegalFields.bind(this);
     this.bindRoutes = this.bindRoutes.bind(this);
-    this.createRouter = this.createRouter.bind(this);
+    this.appendCRUDRoutes = this.appendCRUDRoutes.bind(this);
     this.create = this.create.bind(this);
     this.read = this.read.bind(this);
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
 
-    this.router = this.createRouter();
+    this.router = express.Router();
   }
 
   extractLegalFields(body) {
@@ -33,26 +33,26 @@ class CRUDRouter {
   }
 
   bindRoutes(app) {
+    this.appendCRUDRoutes();
     app.use('/' + this.table, this.router);
   }
 
-  createRouter() {
-    let router = express.Router();
+  appendCRUDRoutes() {
 
     // Middleware to parse ID into a number
-    router.param('id', (req, res, next, id) => {
+    this.router.param('id', (req, res, next, id) => {
       req.params.id = parseInt(id);
       next();
     });
 
     // Middleware to strip out any illegal fields
-    router.use((req, res, next) => {
+    this.router.use((req, res, next) => {
       req.body = this.extractLegalFields(req.body);
       next();
     })
 
     // Global route
-    router.route('/')
+    this.router.route('/')
     // Read all
     .get((req, res) => {
       this.read().then((records) => {
@@ -80,7 +80,7 @@ class CRUDRouter {
     });
 
     // Game specific routes
-    router.route('/:id(\\d+)')
+    this.router.route('/:id(\\d+)')
     // Get specific
     .get((req, res) => {
       this.read({[this.idColumn]: req.params.id})
@@ -116,7 +116,7 @@ class CRUDRouter {
     });
 
     // Error handling middleware
-    router.use((err, req, res, next) => {
+    this.router.use((err, req, res, next) => {
       // TODO: Would much rather have this in the post handler but the catch there
       //        does not appear to be called...
       if(err.code && err.code === 'ER_DUP_ENTRY') {
@@ -125,8 +125,6 @@ class CRUDRouter {
         res.sendStatus(500);
       }
     });
-
-    return router;
   }
 
   // helpers for easier expansion w/ methods using CRUDHandler
