@@ -10,7 +10,7 @@ class CRUDRouter {
 
     this.extractLegalFields = this.extractLegalFields.bind(this);
     this.bindRoutes = this.bindRoutes.bind(this);
-    this.createRouter = this.createRouter.bind(this);
+    this.appendCRUDRoutes = this.appendCRUDRoutes.bind(this);
     this.create = this.create.bind(this);
     this.read = this.read.bind(this);
     this.update = this.update.bind(this);

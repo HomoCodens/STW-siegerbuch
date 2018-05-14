@@ -38,11 +38,15 @@ var fakeDelete = sinon.stub();
 fakeDelete.withArgs('games', {game_id: existingId}).resolves();
 fakeDelete.withArgs('games', {game_id: nonExistingId}).resolves();
 
+var fakeQuery = sinon.stub();
+fakeQuery.resolves(games);
+
 var fakeCRUD = {
   create: fakeCreate,
   read: fakeRead,
   update: fakeUpdate,
-  delete: fakeDelete
+  delete: fakeDelete,
+  query: fakeQuery
 };
 
 const router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
@@ -318,6 +322,22 @@ describe('CRUDRoutes', function() {
         response.statusCode.should.equal(200);
         response.body.should.eql(games);
       });
+    });
+
+    it('query', function() {
+      router.router.get('/customquery', (req, res) => {
+        router.query('SELECT ?? FROM ??', [['colA', 'colB'], 'table']).then((records) => {
+          res.json(records);
+        });
+      });
+
+      request.get('/games/customquery')
+      .then((response) => {
+        response.statusCode.should.equal(200);
+        response.body.should.eql(games);
+
+        fakeCRUD.query.calledWith('SELECT ?? FROM ??', [['colA', 'colB'], 'table']).should.be.true;
+      })
     });
   });
 });

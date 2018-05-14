@@ -319,5 +319,15 @@ describe('CRUD tests', function() {
         args[1][1].toSqlString().should.equal(testCRUD.chainConditions(testRecords[0]).toSqlString());
       });
     });
+
+    it('query', function() {
+      const result = testCRUD.query('SELECT * FROM ?? WHERE ?', ['the_future', {person: 'moi'}]);
+
+      result.then((r) => {
+        r.should.equal(fakeDBPromise);
+
+        fakeConnection.query.calledWith('SELECT * FROM ?? WHERE ?', ['the_future', {person: 'moi'}]).should.be.true;
+      });
+    });
   });
 });
