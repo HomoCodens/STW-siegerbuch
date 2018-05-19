@@ -49,16 +49,17 @@ var fakeCRUD = {
   query: fakeQuery
 };
 
-const router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
-
 describe('CRUDRoutes', function() {
   var app;
   var request;
+  var router;
 
   beforeEach(() => {
     app = express();
 
     app.use(bodyParser.json());
+
+    router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
 
     router.bindRoutes(app);
 
