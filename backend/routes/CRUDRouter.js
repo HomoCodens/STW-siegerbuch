@@ -48,7 +48,7 @@ class CRUDRouter {
 
     // Middleware to strip out any illegal fields
     this.router.use((req, res, next) => {
-      req.body = this.extractLegalFields(req.body);
+      req.cleanedBody = this.extractLegalFields(req.body);
       next();
     })
 
@@ -62,10 +62,10 @@ class CRUDRouter {
     })
     // Create
     .post((req, res) => {
-      if(!req.body || Object.keys(req.body).length === 0) {
+      if(!req.cleanedBody || Object.keys(req.cleanedBody).length === 0) {
         res.sendStatus(400)
       } else {
-        this.create(req.body)
+        this.create(req.cleanedBody)
         .then((created) => {
           res.status(201)
           .append('Location', '/' + this.table + '/' + created.insertId)
