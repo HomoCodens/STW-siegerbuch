@@ -75,7 +75,7 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('CREATE', function() {
     it('POST /resource', function() {
-      request.post('/games')
+      return request.post('/games')
       .send(games[0])
       .then((response) => {
         response.statusCode.should.equal(201);
@@ -91,7 +91,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('POST duplicate /resource', function() {
-      request.post('/games')
+      return request.post('/games')
       .send(games[1])
       .then((response) => {
         response.statusCode.should.equal(409);
@@ -106,7 +106,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('POST empty /resource', function() {
-      request.post('/games')
+      return request.post('/games')
       .then((response) => {
         response.statusCode.should.equal(400);
 
@@ -124,7 +124,7 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('READ', function() {
     it('GET /resource', function() {
-      request.get('/games')
+      return request.get('/games')
       .then((response) => {
         response.statusCode.should.equal(200);
 
@@ -136,7 +136,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('GET /resource/existing', function() {
-      request.get('/games/' + existingId)
+      return request.get('/games/' + existingId)
       .then((response) => {
         response.statusCode.should.equal(200);
 
@@ -148,7 +148,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('GET /resource/nonexisting', function() {
-      request.get('/games/' + nonExistingId)
+      return request.get('/games/' + nonExistingId)
       .then((response) => {
         response.statusCode.should.equal(404);
 
@@ -160,7 +160,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('GET /resource/NaN', function() {
-      request.get('/games/baNaNas')
+      return request.get('/games/baNaNas')
       .then((response) => {
         response.statusCode.should.equal(404);
 
@@ -176,7 +176,7 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('UPDATE', function() {
     it('PATCH /resource/existing', function() {
-      request.patch('/games/' + existingId)
+      return request.patch('/games/' + existingId)
       .send(games[0])
       .then((response) => {
         response.statusCode.should.equal(204);
@@ -189,7 +189,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('PATCH /resource/nonexisting', function() {
-      request.patch('/games/' + nonExistingId)
+      return request.patch('/games/' + nonExistingId)
       .send(games[0])
       .then((response) => {
         response.statusCode.should.equal(404);
@@ -202,7 +202,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('PATCH empty /resource', function() {
-      request.patch('/games/' + existingId)
+      return request.patch('/games/' + existingId)
       .then((response) => {
         response.statusCode.should.equal(400);
 
@@ -217,7 +217,7 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('DELETE', function() {
     it('DELETE /resource/existing', function() {
-      request.delete('/games/' + existingId)
+      return request.delete('/games/' + existingId)
       .then((response) => {
         response.statusCode.should.equal(204);
 
@@ -229,7 +229,7 @@ describe('CRUDRoutes', function() {
     });
 
     it('DELETE /resource/nonexisting', function() {
-      request.delete('/games/' + nonExistingId)
+      return request.delete('/games/' + nonExistingId)
       .then((response) => {
         response.statusCode.should.equal(204);
 
@@ -246,25 +246,25 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('CRUDRouter helpers', function() {
     it('create', function() {
-      router.create(games[0]).then((result) => {
+      return router.create(games[0]).then((result) => {
         fakeCRUD.create.calledWith('games', games[0]).should.be.true;
       });
     });
 
     it('read', function() {
-      router.read().then((result) => {
+      return router.read().then((result) => {
         fakeCRUD.read.calledWith('games').should.be.true;
       });
     });
 
     it('update', function() {
-      router.update({game_id: 1}, games[0]).then((result) => {
+      return router.update({game_id: 1}, games[0]).then((result) => {
         fakeCRUD.update.calledWith('games', {game_id: 1}, games[0]).should.be.true;
       });
     });
 
     it('delete', function() {
-      router.delete({game_id: 1}).then((result) => {
+      return router.delete({game_id: 1}).then((result) => {
           fakeCRUD.delete.calledWith('games', {game_id: 1}).should.be.true;
       });
     });
@@ -275,7 +275,7 @@ describe('CRUDRoutes', function() {
   ****************************************/
   describe('misc', function() {
     it('error middleware', function() {
-      request.get('/games/' + evilId)
+      return request.get('/games/' + evilId)
       .then((response) => {
         response.statusCode.should.equal(500);
 
@@ -289,7 +289,7 @@ describe('CRUDRoutes', function() {
       var data = games[0];
       data.illegalField = 'Evil stuff & hackling';
 
-      request.post('/games')
+      return request.post('/games')
       .send(data)
       .then((response) => {
         response.body.should.have.property('id').that.is.a('number');
@@ -303,7 +303,7 @@ describe('CRUDRoutes', function() {
         res.send('Results');
       });
 
-      request.get('/games/test')
+      return request.get('/games/test')
       .then((response) => {
         response.statusCode.should.equal(200);
         response.text.should.equal('Results');
@@ -317,7 +317,7 @@ describe('CRUDRoutes', function() {
         });
       });
 
-      request.get('/games/allthegames')
+      return request.get('/games/allthegames')
       .then((response) => {
         response.statusCode.should.equal(200);
         response.body.should.eql(games);
@@ -331,7 +331,7 @@ describe('CRUDRoutes', function() {
         });
       });
 
-      request.get('/games/customquery')
+      return request.get('/games/customquery')
       .then((response) => {
         response.statusCode.should.equal(200);
         response.body.should.eql(games);
