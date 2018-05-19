@@ -1,6 +1,7 @@
 const express = require('express');
 
 class CRUDRouter {
+  // TODO: Use readColumns (default to writeColumns) and add requiredFields
   constructor(CRUDHandler, table, idColumn, writeColumns, readColumns) {
     this.CRUDHandler = CRUDHandler;
     this.table = table;
@@ -34,8 +35,14 @@ class CRUDRouter {
   }
 
   bindRoutes(app) {
+    this.beforeRoutes();
     this.appendCRUDRoutes();
+    this.afterRoutes();
     app.use('/' + this.table, this.router);
+  }
+
+  beforeRoutes() {
+
   }
 
   appendCRUDRoutes() {
@@ -55,13 +62,14 @@ class CRUDRouter {
     // Global route
     this.router.route('/')
     // Read all
-    .get((req, res) => {
+    .get((req, res, next) => {
       this.read().then((records) => {
         res.json(records);
+        next();
       });
     })
     // Create
-    .post((req, res) => {
+    .post((req, res, next) => {
       if(!req.cleanedBody || Object.keys(req.cleanedBody).length === 0) {
         res.sendStatus(400)
       } else {
@@ -70,6 +78,8 @@ class CRUDRouter {
           res.status(201)
           .append('Location', '/' + this.table + '/' + created.insertId)
           .json({id: created.insertId});
+          res.locals.id = created.insertId;
+          next();
         })
         // TODO: Why is this skipped?
         .catch((error) => {
@@ -83,7 +93,7 @@ class CRUDRouter {
     // Game specific routes
     this.router.route('/:id(\\d+)')
     // Get specific
-    .get((req, res) => {
+    .get((req, res, next) => {
       this.read({[this.idColumn]: req.params.id})
       .then((record) => {
         if(record.length === 0) {
@@ -91,12 +101,14 @@ class CRUDRouter {
         } else {
           res.json(record);
         }
+        next();
       });
     })
     // Update specific
-    .patch((req, res) => {
+    .patch((req, res, next) => {
       if(!req.body || Object.keys(req.body).length === 0) {
         res.sendStatus(400);
+        next();
       } else {
         this.update({[this.idColumn]: req.params.id}, req.body)
         .then((updated) => {
@@ -105,11 +117,13 @@ class CRUDRouter {
           } else {
             res.sendStatus(204);
           }
+          next();
         });
       }
     })
     // Delete specific
-    .delete((req, res) => {
+    .delete((req, res, next) => {
+      console.log("DELETE /id")
       this.delete({[this.idColumn]: req.params.id})
       .then(() => {
         res.sendStatus(204);
@@ -126,6 +140,10 @@ class CRUDRouter {
         res.sendStatus(500);
       }
     });
+  }
+
+  afterRoutes() {
+
   }
 
   // helpers for easier expansion w/ methods using CRUDHandler
