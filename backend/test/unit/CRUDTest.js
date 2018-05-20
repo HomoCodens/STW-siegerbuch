@@ -94,7 +94,7 @@ describe('CRUD tests', function() {
     it('disposes of the connection', function() {
       const result = testCRUD.create('table', {});
 
-      result.then((r) => {
+      return result.then((r) => {
         // TODO: Is this still "unit" testing?
         fakePool.releaseConnection.calledOnce.should.be.true;
         fakePool.releaseConnection.lastCall.calledWith(fakeConnection).should.be.true;
@@ -121,7 +121,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.be.a('array').that.has.length(2);
 
         testCRUD.create.calledTwice.should.be.true;
@@ -139,7 +139,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
           r.should.be.a('array').that.has.length(3);
           r.map((entry) => entry.should.equal(fakeDBPromise));
 
@@ -170,7 +170,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -183,7 +183,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
           r.should.equal(fakeDBPromise);
 
           fakeConnection.query.calledOnce.should.be.true;
@@ -196,7 +196,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -217,7 +217,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -239,7 +239,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -260,7 +260,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -282,7 +282,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -304,7 +304,7 @@ describe('CRUD tests', function() {
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledOnce.should.be.true;
@@ -323,7 +323,7 @@ describe('CRUD tests', function() {
     it('query', function() {
       const result = testCRUD.query('SELECT * FROM ?? WHERE ?', ['the_future', {person: 'moi'}]);
 
-      result.then((r) => {
+      return result.then((r) => {
         r.should.equal(fakeDBPromise);
 
         fakeConnection.query.calledWith('SELECT * FROM ?? WHERE ?', ['the_future', {person: 'moi'}]).should.be.true;
