@@ -1,0 +1,58 @@
+[
+  {
+    "play_id": 1,
+    "game_id": 1,
+    "played_at": 1526801373030,
+    "players": [1, 2, 3],
+    "scores": [4, 2, 9],
+    "comment": null
+  },
+  {
+    "play_id": 2,
+    "game_id": 6,
+    "played_at": 1526802588698,
+    "players": [7, 2],
+    "scores": [12, 15],
+    "comment": "Dieser verdammte Räuber!"
+  },
+  {
+    "play_id": 3,
+    "game_id": 3,
+    "played_at": 1526802588698,
+    "players": [4, 1, 6, 2],
+    "scores": [0, 0, 0, 0],
+    "comment": null
+  },
+  {
+    "play_id": 4,
+    "game_id": 2,
+    "played_at": 1526806373030,
+    "players": [6, 5, 4, 3, 2],
+    "scores": [11, 64, 23, 45, 21],
+    "comment": "Spieler 5 kann zaubern..."
+  },
+  {
+    "play_id": 5,
+    "game_id": 4,
+    "played_at": 1526831373030,
+    "players": [6],
+    "scores": [54],
+    "comment": "Beide Kannibalen in der ersten Phase. Woot!"
+  },
+  {
+    "play_id": 6,
+    "game_id": 1,
+    "played_at": 1526875373030,
+    "players": [7, 3],
+    "scores": [-4, 35],
+    "comment": "Betteln nix gut..."
+  },
+  {
+    "play_id": 6,
+    "game_id": 2,
+    "played_at": 1526875373030,
+    "players": [1, 2, 3],
+    "scores": [23, 23, 34],
+    "comment": null
+  }
+]

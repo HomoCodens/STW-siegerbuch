@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS siegerbuch_prod.games	(
 	game_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	game_name VARCHAR(60) NOT NULL UNIQUE,
 	bgg_id INT UNSIGNED,
-	thumbnail_url TEXT
+	thumbnail_url TEXT,
+	is_coop BOOLEAN DEFAULT 0
 )ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS siegerbuch_prod.players (
@@ -17,8 +18,6 @@ CREATE TABLE IF NOT EXISTS siegerbuch_prod.plays	(
 	play_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	game_id INT UNSIGNED,
 	played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	winner_id INT UNSIGNED,
-	is_coop BOOLEAN DEFAULT 0,
 	players TEXT,
 	scores TEXT,
 	comment TEXT DEFAULT NULL,
@@ -33,7 +32,8 @@ CREATE TABLE IF NOT EXISTS siegerbuch_test.games	(
 	game_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	game_name VARCHAR(60) NOT NULL UNIQUE,
 	bgg_id INT UNSIGNED,
-	thumbnail_url TEXT
+	thumbnail_url TEXT,
+	is_coop BOOLEAN DEFAULT 0
 )ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS siegerbuch_test.players (
@@ -45,9 +45,7 @@ CREATE TABLE IF NOT EXISTS siegerbuch_test.players (
 CREATE TABLE IF NOT EXISTS siegerbuch_test.plays	(
 	play_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	game_id INT UNSIGNED,
-	played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	winner_id INT UNSIGNED,
-	is_coop BOOLEAN DEFAULT 0,
+	played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	players TEXT,
 	scores TEXT,
 	comment TEXT DEFAULT NULL,

@@ -1,0 +1,37 @@
+[
+  {
+    "player_id": 1,
+    "user_id": null,
+    "player_name": "Albert"
+  },
+  {
+    "player_id": 2,
+    "user_id": 1,
+    "player_name": "Belinda"
+  },
+  {
+    "player_id": 3,
+    "user_id": null,
+    "player_name": "Christoph"
+  },
+  {
+    "player_id": 4,
+    "user_id": 2,
+    "player_name": "Denise"
+  },
+  {
+    "player_id": 5,
+    "user_id": 3,
+    "player_name": "Elisabeth"
+  },
+  {
+    "player_id": 6,
+    "user_id": null,
+    "player_name": "Franz"
+  },
+  {
+    "player_id": 7,
+    "user_id": 4,
+    "player_name": "Gabi"
+  }
+]
