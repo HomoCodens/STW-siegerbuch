@@ -123,7 +123,6 @@ class CRUDRouter {
     })
     // Delete specific
     .delete((req, res, next) => {
-      console.log("DELETE /id")
       this.delete({[this.idColumn]: req.params.id})
       .then(() => {
         res.sendStatus(204);
