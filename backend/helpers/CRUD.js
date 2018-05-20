@@ -102,7 +102,7 @@ class CRUD {
   loadFixtures(data) {
     return Promise.using(this.getConnection(), (conn) => {
       const tables = Object.getOwnPropertyNames(data);
-      return Promise.each(tables, (table) => {
+      return Promise.mapSeries(tables, (table) => {
         return this.create(table, data[table]);
       });
     });
@@ -110,7 +110,7 @@ class CRUD {
 
   dropTables(tables) {
     return Promise.using(this.getConnection(), (conn) => {
-      return Promise.each(tables, (table) => {
+      return Promise.mapSeries(tables, (table) => {
         return conn.query('DELETE FROM ??', [table]);
       });
     });
