@@ -66,7 +66,8 @@ class CRUDRouter {
       this.read().then((records) => {
         res.json(records);
         next();
-      });
+      })
+      .catch(next);
     })
     // Create
     .post((req, res, next) => {
@@ -85,8 +86,11 @@ class CRUDRouter {
         .catch((error) => {
           if(error.code && error.code === 'ER_DUP_ENTRY') {
             res.status(409).json({error: 'Duplicate entry!'});
+          } else {
+            throw error;
           }
-        });
+        })
+        .catch(next);
       }
     });
 
@@ -102,7 +106,8 @@ class CRUDRouter {
           res.json(record);
         }
         next();
-      });
+      })
+      .catch(next);
     })
     // Update specific
     .patch((req, res, next) => {
@@ -118,7 +123,8 @@ class CRUDRouter {
             res.sendStatus(204);
           }
           next();
-        });
+        })
+        .catch(next);
       }
     })
     // Delete specific
@@ -126,18 +132,15 @@ class CRUDRouter {
       this.delete({[this.idColumn]: req.params.id})
       .then(() => {
         res.sendStatus(204);
-      });
+      })
+      .catch(next);
     });
 
     // Error handling middleware
     this.router.use((err, req, res, next) => {
       // TODO: Would much rather have this in the post handler but the catch there
       //        does not appear to be called...
-      if(err.code && err.code === 'ER_DUP_ENTRY') {
-        res.status(409).json({error: 'Duplicate entry!'});
-      } else {
-        res.sendStatus(500);
-      }
+      res.sendStatus(500);
     });
   }
 

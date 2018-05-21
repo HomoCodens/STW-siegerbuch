@@ -22,13 +22,13 @@ const evilId = 666;
 
 var fakeCreate = sinon.stub();
 fakeCreate.withArgs('games', sinon.match({game_name: games[0].game_name})).resolves({insertId: newId});
-fakeCreate.withArgs('games', games[1]).throws({code: 'ER_DUP_ENTRY'});
+fakeCreate.withArgs('games', games[1]).rejects({code: 'ER_DUP_ENTRY'});
 
 var fakeRead = sinon.stub();
 fakeRead.withArgs('games').resolves(games);
 fakeRead.withArgs('games', {game_id: existingId}).resolves(games[0]);
 fakeRead.withArgs('games', {game_id: nonExistingId}).resolves([]);
-fakeRead.withArgs('games', {game_id: evilId}).throws('Braaaaains');
+fakeRead.withArgs('games', {game_id: evilId}).rejects('Braaaaains');
 
 var fakeUpdate = sinon.stub();
 fakeUpdate.withArgs('games', {game_id: existingId}).resolves({changedRows: 1});
