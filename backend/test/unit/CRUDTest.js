@@ -31,7 +31,10 @@ const testValues = [
 const fakeDBPromise = 'I solemnly swear to return some DB results within the second!';
 
 const fakeConnection = {
-  query: sinon.fake.returns(fakeDBPromise)
+  query: sinon.fake.resolves(fakeDBPromise),
+  beginTransaction: sinon.fake.resolves(fakeDBPromise),
+  commit: sinon.fake.resolves(fakeDBPromise),
+  rollback: sinon.fake.resolves(fakeDBPromise)
 }
 
 const fakeConnectionPromise = Promise.resolve(fakeConnection);
@@ -328,6 +331,36 @@ describe('CRUD tests', function() {
 
         fakeConnection.query.calledWith('SELECT * FROM ?? WHERE ?', ['the_future', {person: 'moi'}]).should.be.true;
       });
+    });
+
+    it('beginTransaction', function() {
+      const result = testCRUD.beginTransaction();
+
+      return result.then((r) => {
+        r.should.equal(fakeDBPromise);
+
+        fakeConnection.beginTransaction.calledOnce.should.be.true;
+      })
+    });
+
+    it('commit', function() {
+      const result = testCRUD.commit();
+
+      return result.then((r) => {
+        r.should.equal(fakeDBPromise);
+
+        fakeConnection.commit.calledOnce.should.be.true;
+      })
+    });
+
+    it('rollback', function() {
+      const result = testCRUD.rollback();
+
+      return result.then((r) => {
+        r.should.equal(fakeDBPromise);
+
+        fakeConnection.rollback.calledOnce.should.be.true;
+      })
     });
   });
 });

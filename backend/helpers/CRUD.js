@@ -84,6 +84,24 @@ class CRUD {
     });
   }
 
+  beginTransaction() {
+    return Promise.using(this.getConnection(), (conn) => {
+      return conn.beginTransaction();
+    });
+  }
+
+  commit() {
+    return Promise.using(this.getConnection(), (conn) => {
+      return conn.commit();
+    });
+  }
+
+  rollback() {
+    return Promise.using(this.getConnection(), (conn) => {
+      return conn.rollback();
+    });
+  }
+
   // TODO: Expand conditions to allow for some SQL-like syntax w/ more than just = AND = AND =
   // e.g.
   // {

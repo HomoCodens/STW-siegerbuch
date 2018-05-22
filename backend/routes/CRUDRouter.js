@@ -168,6 +168,18 @@ class CRUDRouter {
   query(query, parameters) {
     return this.CRUDHandler.query(query, parameters);
   }
+
+  beginTransaction() {
+    return this.CRUDHandler.beginTransaction();
+  }
+
+  commit() {
+    return this.CRUDHandler.commit();
+  }
+
+  rollback() {
+    return this.CRUDHandler.rollback();
+  }
 }
 
 module.exports = CRUDRouter;

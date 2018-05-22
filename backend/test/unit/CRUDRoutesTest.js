@@ -46,7 +46,10 @@ var fakeCRUD = {
   read: fakeRead,
   update: fakeUpdate,
   delete: fakeDelete,
-  query: fakeQuery
+  query: fakeQuery,
+  beginTransaction: sinon.fake.resolves(),
+  commit: sinon.fake.resolves(),
+  rollback: sinon.fake.resolves()
 };
 
 describe('CRUDRoutes', function() {
@@ -355,6 +358,24 @@ describe('CRUDRoutes', function() {
 
         fakeCRUD.query.calledWith('SELECT ?? FROM ??', [['colA', 'colB'], 'table']).should.be.true;
       })
+    });
+
+    it('beginTransaction', function() {
+      return router.beginTransaction().then(() => {
+        fakeCRUD.beginTransaction.calledOnce.should.be.true;
+      });
+    });
+
+    it('commit', function() {
+      return router.commit().then(() => {
+        fakeCRUD.commit.calledOnce.should.be.true;
+      });
+    });
+
+    it('rollback', function() {
+      return router.rollback().then(() => {
+        fakeCRUD.rollback.calledOnce.should.be.true;
+      });
     });
   });
 });
