@@ -20,6 +20,8 @@ const nonExistingId = 2;
 const newId = 3;
 const evilId = 666;
 
+var fakeConnection = "I R DB connect";
+
 var fakeCreate = sinon.stub();
 fakeCreate.withArgs('games', sinon.match({game_name: games[0].game_name})).resolves({insertId: newId});
 fakeCreate.withArgs('games', games[1]).rejects({code: 'ER_DUP_ENTRY'});
@@ -47,7 +49,7 @@ var fakeCRUD = {
   update: fakeUpdate,
   delete: fakeDelete,
   query: fakeQuery,
-  beginTransaction: sinon.fake.resolves(),
+  beginTransaction: sinon.fake.resolves(fakeConnection),
   commit: sinon.fake.resolves(),
   rollback: sinon.fake.resolves()
 };
@@ -251,25 +253,49 @@ describe('CRUDRoutes', function() {
   describe('CRUDRouter helpers', function() {
     it('create', function() {
       return router.create(games[0]).then((result) => {
-        fakeCRUD.create.calledWith('games', games[0]).should.be.true;
+        fakeCRUD.create.calledWith('games', games[0], null).should.be.true;
+      });
+    });
+
+    it('create w/ connection', function() {
+      return router.create(games[0], fakeConnection).then((result) => {
+        fakeCRUD.create.calledWith('games', games[0], fakeConnection).should.be.true;
       });
     });
 
     it('read', function() {
       return router.read().then((result) => {
-        fakeCRUD.read.calledWith('games').should.be.true;
+        fakeCRUD.read.calledWith('games', undefined, null).should.be.true;
+      });
+    });
+
+    it('read w/ connection', function() {
+      return router.read(null, fakeConnection).then((result) => {
+        fakeCRUD.read.calledWith('games', null, fakeConnection).should.be.true;
       });
     });
 
     it('update', function() {
       return router.update({game_id: 1}, games[0]).then((result) => {
-        fakeCRUD.update.calledWith('games', {game_id: 1}, games[0]).should.be.true;
+        fakeCRUD.update.calledWith('games', {game_id: 1}, games[0], null).should.be.true;
+      });
+    });
+
+    it('update w/ connection', function() {
+      return router.update({game_id: 1}, games[0], fakeConnection).then((result) => {
+        fakeCRUD.update.calledWith('games', {game_id: 1}, games[0], fakeConnection).should.be.true;
       });
     });
 
     it('delete', function() {
       return router.delete({game_id: 1}).then((result) => {
-          fakeCRUD.delete.calledWith('games', {game_id: 1}).should.be.true;
+          fakeCRUD.delete.calledWith('games', {game_id: 1}, null).should.be.true;
+      });
+    });
+
+    it('delete', function() {
+      return router.delete({game_id: 1}, fakeConnection).then((result) => {
+          fakeCRUD.delete.calledWith('games', {game_id: 1}, fakeConnection).should.be.true;
       });
     });
   });
@@ -361,20 +387,24 @@ describe('CRUDRoutes', function() {
     });
 
     it('beginTransaction', function() {
-      return router.beginTransaction().then(() => {
+      return router.beginTransaction().then((conn) => {
+        conn.should.equal(fakeConnection);
+
         fakeCRUD.beginTransaction.calledOnce.should.be.true;
       });
     });
 
     it('commit', function() {
-      return router.commit().then(() => {
+      return router.commit(fakeConnection).then(() => {
         fakeCRUD.commit.calledOnce.should.be.true;
+        fakeCRUD.commit.calledWith(fakeConnection).should.be.true;
       });
     });
 
     it('rollback', function() {
-      return router.rollback().then(() => {
+      return router.rollback(fakeConnection).then(() => {
         fakeCRUD.rollback.calledOnce.should.be.true;
+        fakeCRUD.rollback.calledWith(fakeConnection).should.be.true;
       });
     });
   });

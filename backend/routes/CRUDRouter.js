@@ -149,36 +149,36 @@ class CRUDRouter {
   }
 
   // helpers for easier expansion w/ methods using CRUDHandler
-  create(data) {
-    return this.CRUDHandler.create(this.table, data);
+  create(data, conn = null) {
+    return this.CRUDHandler.create(this.table, data, conn);
   }
 
-  read(conditions) {
-    return this.CRUDHandler.read(this.table, conditions);
+  read(conditions, conn = null) {
+    return this.CRUDHandler.read(this.table, conditions, conn);
   }
 
-  update(conditions, data) {
-    return this.CRUDHandler.update(this.table, conditions, data);
+  update(conditions, data, conn = null) {
+    return this.CRUDHandler.update(this.table, conditions, data, conn);
   }
 
-  delete(conditions) {
-    return this.CRUDHandler.delete(this.table, conditions);
+  delete(conditions, conn = null) {
+    return this.CRUDHandler.delete(this.table, conditions, conn);
   }
 
-  query(query, parameters) {
-    return this.CRUDHandler.query(query, parameters);
+  query(query, parameters, conn = null) {
+    return this.CRUDHandler.query(query, parameters, conn);
   }
 
   beginTransaction() {
     return this.CRUDHandler.beginTransaction();
   }
 
-  commit() {
-    return this.CRUDHandler.commit();
+  commit(conn) {
+    return this.CRUDHandler.commit(conn);
   }
 
-  rollback() {
-    return this.CRUDHandler.rollback();
+  rollback(conn) {
+    return this.CRUDHandler.rollback(conn);
   }
 }
 

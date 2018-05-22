@@ -20,19 +20,24 @@ class CRUD {
     this.query = this.query.bind(this);
   }
 
-  getConnection() {
+  getConnection(asTransaction = false) {
     const pool = this.pool;
-    return this.pool.getConnection().disposer(function(connection) {
-      pool.releaseConnection(connection);
-    });
+
+    if(asTransaction) {
+      return this.pool.getConnection();
+    } else {
+      return this.pool.getConnection().disposer(function(connection) {
+        pool.releaseConnection(connection);
+      });
+    }
   }
 
   end() {
     this.pool.end();
   }
 
-  create(table, data) {
-    return Promise.using(this.getConnection(), (conn) => {
+  create(table, data, connection = null) {
+    return Promise.using(connection || this.getConnection(), (conn) => {
 
       // If passes a single object, pack it into an array
       if(!Array.isArray(data)) {
@@ -49,7 +54,7 @@ class CRUD {
     });
   }
 
-  read(table, conditions, columns) {
+  read(table, conditions, columns, connection = null) {
 
     const cols = {
       toSqlString: function() {
@@ -57,7 +62,7 @@ class CRUD {
       }
     }
 
-    return Promise.using(this.getConnection(), (conn) => {
+    return Promise.using(connection || this.getConnection(), (conn) => {
       if(conditions) {
         return conn.query('SELECT ? FROM ?? WHERE ?', [cols, table, this.chainConditions(conditions)]);
       } else {
@@ -66,40 +71,46 @@ class CRUD {
     });
   }
 
-  update(table, conditions, data) {
-    return Promise.using(this.getConnection(), (conn) => {
+  update(table, conditions, data, connection = null) {
+    return Promise.using(connection || this.getConnection(), (conn) => {
       return conn.query('UPDATE ?? SET ? WHERE ?', [table, data, this.chainConditions(conditions)]);
     });
   }
 
-  delete(table, conditions) {
-    return Promise.using(this.getConnection(), (conn) => {
+  delete(table, conditions, connection = null) {
+    return Promise.using(connection || this.getConnection(), (conn) => {
       return conn.query('DELETE FROM ?? WHERE ?', [table, this.chainConditions(conditions)]);
     });
   }
 
-  query(query, parameters) {
-    return Promise.using(this.getConnection(), (conn) => {
+  query(query, parameters, connection = null) {
+    return Promise.using(connection || this.getConnection(), (conn) => {
       return conn.query(query, parameters);
     });
   }
 
   beginTransaction() {
-    return Promise.using(this.getConnection(), (conn) => {
-      return conn.beginTransaction();
-    });
+    return this.getConnection(true)
+                .then((conn) => {
+                  return conn.beginTransaction()
+                  .then(() => {
+                    return conn;
+                  });
+                });
   }
 
-  commit() {
-    return Promise.using(this.getConnection(), (conn) => {
-      return conn.commit();
-    });
+  commit(connection) {
+    return connection.commit()
+           .then(() => {
+             this.pool.releaseConnection(connection);
+           });
   }
 
-  rollback() {
-    return Promise.using(this.getConnection(), (conn) => {
-      return conn.rollback();
-    });
+  rollback(connection) {
+    return connection.rollback()
+           .then(() => {
+             this.pool.releaseConnection(connection);
+           });
   }
 
   // TODO: Expand conditions to allow for some SQL-like syntax w/ more than just = AND = AND =

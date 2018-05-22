@@ -86,12 +86,21 @@ describe('CRUD tests', function() {
       fakeConnection.query.resetHistory();
     });
 
-    it('getConnection', function() {
-      const conn = testCRUD.getConnection();
+    it('getConnection oneshot', function() {
+      const dispatcher = testCRUD.getConnection();
 
       fakePool.getConnection.calledOnce.should.be.true;
 
-      conn._promise.should.eventually.equal(fakeConnection);
+      dispatcher.should.have.a.property('_promise');
+      dispatcher._promise.should.eventually.equal(fakeConnection);
+    });
+
+    it('getConnection transaciton', function() {
+      const conn = testCRUD.getConnection(true);
+
+      fakePool.getConnection.calledOnce.should.be.true;
+
+      conn.should.eventually.equal(fakeConnection);
     });
 
     it('disposes of the connection', function() {
@@ -334,33 +343,39 @@ describe('CRUD tests', function() {
     });
 
     it('beginTransaction', function() {
-      const result = testCRUD.beginTransaction();
+      const transactionConnPromise = testCRUD.beginTransaction();
 
-      return result.then((r) => {
-        r.should.equal(fakeDBPromise);
-
+      return transactionConnPromise.then((conn) => {
         fakeConnection.beginTransaction.calledOnce.should.be.true;
-      })
+
+        conn.should.eql(fakeConnection);
+      });
     });
 
     it('commit', function() {
-      const result = testCRUD.commit();
+      const transactionConnPromise = testCRUD.beginTransaction();
 
-      return result.then((r) => {
-        r.should.equal(fakeDBPromise);
+      return transactionConnPromise.then((conn) => {
+        return testCRUD.commit(conn).then(() => {
+            fakeConnection.commit.calledOnce.should.be.true;
 
-        fakeConnection.commit.calledOnce.should.be.true;
-      })
+            fakePool.releaseConnection.calledOnce.should.be.true;
+            fakePool.releaseConnection.calledWith(conn).should.be.true;
+        });
+      });
     });
 
     it('rollback', function() {
-      const result = testCRUD.rollback();
+      const transactionConnPromise = testCRUD.beginTransaction();
 
-      return result.then((r) => {
-        r.should.equal(fakeDBPromise);
+      return transactionConnPromise.then((conn) => {
+        return testCRUD.rollback(conn).then(() => {
+            fakeConnection.rollback.calledOnce.should.be.true;
 
-        fakeConnection.rollback.calledOnce.should.be.true;
-      })
+            fakePool.releaseConnection.calledOnce.should.be.true;
+            fakePool.releaseConnection.calledWith(conn).should.be.true;
+        });
+      });
     });
   });
 });
