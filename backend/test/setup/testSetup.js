@@ -5,3 +5,5 @@ chai.should();
 chai.use(chaiAsPromised);
 
 const should = chai.should();
+
+module.exports = should;

@@ -275,6 +275,22 @@ describe('CRUDRoutes', function() {
   * misc tests
   ****************************************/
   describe('misc', function() {
+    it('calls beforeRoutes', function() {
+      router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
+      router.beforeRoutes = sinon.fake();
+      router.bindRoutes(app);
+
+      router.beforeRoutes.calledOnce.should.be.true;
+    });
+
+    it('calls afterRoutes', function() {
+      router = new CRUDRouter(fakeCRUD, 'games', 'game_id', ['game_name', 'bgg_id', 'thumbnail_url']);
+      router.afterRoutes = sinon.fake();
+      router.bindRoutes(app);
+
+      router.afterRoutes.calledOnce.should.be.true;
+    });
+
     it('error middleware', function() {
       return request.get('/games/' + evilId)
       .then((response) => {
