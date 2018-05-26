@@ -17,20 +17,6 @@ class CRUDRouter {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
     this.query = this.query.bind(this);
-
-    this.router = express.Router();
-
-    // Middleware to parse ID into a number
-    this.router.param('id', (req, res, next, id) => {
-      req.params.id = parseInt(id);
-      next();
-    });
-
-    // Middleware to strip out any illegal fields
-    this.router.use((req, res, next) => {
-      req.cleanedBody = this.extractLegalFields(req.body);
-      next();
-    });
   }
 
   extractLegalFields(body) {
@@ -47,6 +33,20 @@ class CRUDRouter {
   }
 
   bindRoutes(app) {
+    this.router = express.Router();
+
+    // Middleware to parse ID into a number
+    this.router.param('id', (req, res, next, id) => {
+      req.params.id = parseInt(id);
+      next();
+    });
+
+    // Middleware to strip out any illegal fields
+    this.router.use((req, res, next) => {
+      req.cleanedBody = this.extractLegalFields(req.body);
+      next();
+    });
+
     this.beforeRoutes();
     this.appendCRUDRoutes();
     this.afterRoutes();
