@@ -101,7 +101,7 @@ class CRUDRouter {
         if(record.length === 0) {
           res.sendStatus(404);
         } else {
-          res.json(record);
+          res.json(record[0]);
         }
         next();
       })

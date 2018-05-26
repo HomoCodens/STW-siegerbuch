@@ -2,8 +2,6 @@ const CRUDRouter = require('./CRUDRouter');
 
 const Promise = require('bluebird');
 
-const mysql = require('promise-mysql');
-
 class playsRouter extends CRUDRouter {
   constructor(CRUDHandler) {
     super(CRUDHandler, 'plays', 'play_id', ['game_id', 'played_at', 'comment']);

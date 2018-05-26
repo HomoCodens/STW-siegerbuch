@@ -135,6 +135,8 @@ describe('plays routes integration tests', function() {
     .then((response) => {
       response.statusCode.should.equal(200);
 
+      response.body.should.be.a('object');
+
       comparePlays(response.body, plays_appside[existingId - 1]);
     });
   });

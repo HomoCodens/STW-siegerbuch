@@ -28,7 +28,7 @@ fakeCreate.withArgs('games', games[1]).rejects({code: 'ER_DUP_ENTRY'});
 
 var fakeRead = sinon.stub();
 fakeRead.withArgs('games').resolves(games);
-fakeRead.withArgs('games', {game_id: existingId}).resolves(games[0]);
+fakeRead.withArgs('games', {game_id: existingId}).resolves([games[0]]);
 fakeRead.withArgs('games', {game_id: nonExistingId}).resolves([]);
 fakeRead.withArgs('games', {game_id: evilId}).rejects('Braaaaains');
 
