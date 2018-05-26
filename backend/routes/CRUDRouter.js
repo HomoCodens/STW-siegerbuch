@@ -19,6 +19,18 @@ class CRUDRouter {
     this.query = this.query.bind(this);
 
     this.router = express.Router();
+
+    // Middleware to parse ID into a number
+    this.router.param('id', (req, res, next, id) => {
+      req.params.id = parseInt(id);
+      next();
+    });
+
+    // Middleware to strip out any illegal fields
+    this.router.use((req, res, next) => {
+      req.cleanedBody = this.extractLegalFields(req.body);
+      next();
+    });
   }
 
   extractLegalFields(body) {
@@ -46,19 +58,6 @@ class CRUDRouter {
   }
 
   appendCRUDRoutes() {
-
-    // Middleware to parse ID into a number
-    this.router.param('id', (req, res, next, id) => {
-      req.params.id = parseInt(id);
-      next();
-    });
-
-    // Middleware to strip out any illegal fields
-    this.router.use((req, res, next) => {
-      req.cleanedBody = this.extractLegalFields(req.body);
-      next();
-    })
-
     // Global route
     this.router.route('/')
     // Read all
@@ -82,7 +81,6 @@ class CRUDRouter {
           res.locals.id = created.insertId;
           next();
         })
-        // TODO: Why is this skipped?
         .catch((error) => {
           if(error.code && error.code === 'ER_DUP_ENTRY') {
             res.status(409).json({error: 'Duplicate entry!'});
@@ -138,8 +136,6 @@ class CRUDRouter {
 
     // Error handling middleware
     this.router.use((err, req, res, next) => {
-      // TODO: Would much rather have this in the post handler but the catch there
-      //        does not appear to be called...
       res.sendStatus(500);
     });
   }

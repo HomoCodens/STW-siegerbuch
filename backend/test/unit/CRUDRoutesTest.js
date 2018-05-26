@@ -175,6 +175,10 @@ describe('CRUDRoutes', function() {
         fakeCRUD.read.notCalled.should.be.true;
       });
     });
+
+    xit('GET with error', function() {
+
+    });
   });
 
   /****************************************
@@ -214,7 +218,7 @@ describe('CRUDRoutes', function() {
 
         response.body.should.be.empty;
 
-        fakeCRUD.create.notCalled.should.be.true;
+        fakeCRUD.update.notCalled.should.be.true;
       });
     });
   });
